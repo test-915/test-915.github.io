@@ -162,11 +162,11 @@ componentWillUnmount(){
 
 
 
-## 旧版的生命周期
+## v16生命周期
 
 
 
-### 挂载时
+### 挂载组件
 
 > 1.constructo //构造器
 >
@@ -175,12 +175,10 @@ componentWillUnmount(){
 > 3.render 渲染组件
 >
 > 4.componentDidMount //完成挂载后
->
-> 5.componentWillUnmount //卸载
 
 
 
-### 更新时
+### 更新组件
 
 
 
@@ -193,8 +191,8 @@ componentWillUnmount(){
 > 4.render //渲染
 >
 > 5.componenDidUpdate //更新后
->
-> 6.可能卸载
+
+
 
 
 
@@ -207,13 +205,13 @@ componentWillUnmount(){
 > 4.render //渲染
 >
 > 5.componenDidUpdate //更新后
->
-> 6.可能卸载
 
 
 
 #### 父组件render
 
+> 1.componentWillReceiveProps //子组件接受父组件传递过来的参数
+>
 > 2.shouldComponentUpdate //是否应该更新，默认为true
 >
 > 3.componentWillUpdate //将更新
@@ -221,22 +219,65 @@ componentWillUnmount(){
 > 4.render //渲染
 >
 > 5.componenDidUpdate //更新后
->
-> 6.可能卸载
+
+
+
+##### 组件将要接受新的props钩子
+
+```
+componentWillReceiveProps(props){
+	//组件将要接受新的props钩子
+}
+```
 
 
 
 ##### 如何挂载父子组件
 
 ```jsx
+//A组件
+static = {carName:'奔驰'}
 render(){
 	return(
 		<div>
-			<B/> //子组件类名
+			<B carName={this.state.carName} /> //子组件类名
 		</div>
 	)
 }
+//B组件
+render(){
+	return(
+		<div>B组件{this.props.carName}</div>
+	)
+}
 ```
+
+
+
+### 卸载组件
+
+```jsx
+//触发器
+ReactDom.unmountComponentAtNode()
+//触发函数
+componentWillUnmount()
+```
+
+
+
+## v17生命周期
+
+
+
+### 不推荐的钩子
+
+> componentWillMount 
+>
+> componentWillReceiveProps 
+>
+> componentWillUpdate 
+>
+> 以上钩子需要加上UNSAFE_作为前缀
 
 
 
