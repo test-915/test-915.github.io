@@ -1,5 +1,7 @@
 ```
-https://www.youtube.com/watch?v=vU3MVB5IxUY&list=PLmOn9nNkQxJFJXLvkNsGsoCUxJLqyLGxu&index=35
+https://www.youtube.com/watch?v=H6n72VaZvYg&list=PLmOn9nNkQxJFJXLvkNsGsoCUxJLqyLGxu&index=46
+
+已完成
 ```
 
 
@@ -10,7 +12,11 @@ https://www.youtube.com/watch?v=vU3MVB5IxUY&list=PLmOn9nNkQxJFJXLvkNsGsoCUxJLqyL
 
 
 
+
+
 ## 状态：state
+
+
 
 
 
@@ -24,6 +30,8 @@ state = {
 
 
 
+
+
 ### 修改状态
 
 ```jsx
@@ -32,7 +40,11 @@ this.setState({key:val})
 
 
 
+
+
 ## 定位：refs
+
+
 
 
 
@@ -42,9 +54,9 @@ this.setState({key:val})
 
 
 
-
-
 # 收集表单数据
+
+
 
 
 
@@ -53,6 +65,8 @@ this.setState({key:val})
 > 随着输入的数据改变状态，提交数据时从状态中获取数据，就是受控组件。
 >
 > 现用现取，就非受控组件。
+
+
 
 
 
@@ -66,6 +80,8 @@ dome = (event)=>{
 
 
 
+
+
 ## 阻止表单提交
 
 ```jsx
@@ -73,6 +89,8 @@ handleSubmit = (event)=>{
 	event.preventDefault()
 }
 ```
+
+
 
 
 
@@ -94,6 +112,8 @@ handleSubmit = (event)=>{
 
 
 
+
+
 ## 获取回调函数ref
 
 ```jsx
@@ -104,7 +124,11 @@ handleSubmit = ()=>{
 
 
 
+
+
 # 组件生命周期
+
+
 
 
 
@@ -119,11 +143,15 @@ ReactDOM.render(
 
 
 
+
+
 ## 组件卸载
 
 ```jsx
 ReactDome.unmountComponentAtNode( document.getElementById(test'') )
 ```
+
+
 
 
 
@@ -142,6 +170,8 @@ class Dome extends React.Component{
 
 
 
+
+
 ## 挂载时调用函数
 
 ```jsx
@@ -149,6 +179,8 @@ componentDidMount(){
 	//挂载后/初始化渲染后调用一次
 }
 ```
+
+
 
 
 
@@ -162,7 +194,11 @@ componentWillUnmount(){
 
 
 
+
+
 ## v16生命周期
+
+
 
 
 
@@ -178,7 +214,11 @@ componentWillUnmount(){
 
 
 
+
+
 ### 更新组件
+
+> 更新后函数componenDidUpdate，接受preProps, preStatic, snapshotValue，也就是先前的值，和快照值。
 
 
 
@@ -208,6 +248,8 @@ componentWillUnmount(){
 
 
 
+
+
 #### 父组件render
 
 > 1.componentWillReceiveProps //子组件接受父组件传递过来的参数
@@ -222,6 +264,8 @@ componentWillUnmount(){
 
 
 
+
+
 ##### 组件将要接受新的props钩子
 
 ```
@@ -229,6 +273,8 @@ componentWillReceiveProps(props){
 	//组件将要接受新的props钩子
 }
 ```
+
+
 
 
 
@@ -254,6 +300,8 @@ render(){
 
 
 
+
+
 ### 卸载组件
 
 ```jsx
@@ -265,7 +313,11 @@ componentWillUnmount()
 
 
 
+
+
 ## v17生命周期
+
+
 
 
 
@@ -281,7 +333,47 @@ componentWillUnmount()
 
 
 
+
+
+### 让状态取决参数
+
+> 功能：从props传递给static状态，让static状态在任何时候都取决于props
+>
+> 挂载时作用于，构造器之后。
+>
+> 更新时作用于，render和shouldComponentUpdate之前。
+>
+> 1.必须静态
+
+```jsx
+static getDerivedStateFromProps(props, static){
+	return {} //返回状态对象
+}
+```
+
+
+
+
+
+### 生成快照
+
+> getSnapshotBeforeUpdate(prevProps, prevStatic){
+>
+> ​	return snapshotValue //快照值，任何类型
+>
+> }
+>
+> 传递给componentDidUpdate的快照值snapshotValue
+>
+> componentDidUpdate(prevProps, prevStatic, snapshotValue)
+
+
+
+
+
 # js语法
+
+
 
 
 
@@ -295,6 +387,8 @@ demo = ()=>{
 
 
 
+
+
 ## 变量对象名
 
 ```jsx
@@ -303,6 +397,8 @@ obj = {[key]:val}
 //等价于
 obj[key] = val
 ```
+
+
 
 
 
@@ -319,4 +415,8 @@ clearInterval(
 	this.timer
 )
 ```
+
+
+
+
 
