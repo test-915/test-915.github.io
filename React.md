@@ -1,7 +1,7 @@
 ```
-https://www.youtube.com/watch?v=H6n72VaZvYg&list=PLmOn9nNkQxJFJXLvkNsGsoCUxJLqyLGxu&index=46
+https://www.youtube.com/watch?v=DbDzHLIUiQk&list=PLmOn9nNkQxJFJXLvkNsGsoCUxJLqyLGxu&index=64
 
-已完成
+未完成
 ```
 
 
@@ -77,6 +77,16 @@ dome = (event)=>{
 	console.log(event.target) //event为事件源
 }
 ```
+
+
+
+### 获取事件键盘编码
+
+```js
+event.keyCode
+```
+
+
 
 
 
@@ -371,6 +381,147 @@ static getDerivedStateFromProps(props, static){
 
 
 
+# 脚手架
+
+
+
+## 安装包
+
+```
+npm install -g create-react-app
+//或者
+npm i create-react-app -g
+```
+
+
+
+
+
+## 创建项目
+
+```
+create-react-app app_name
+```
+
+
+
+
+
+## 脚手架命令
+
+```
+//开启开发者服务器
+npm start 
+yarn start
+
+//打包项目
+npm run build
+yarn build
+
+//测试库
+npm test
+yarn test
+
+//显示webpack.config
+npm run eject
+yarn eject
+```
+
+
+
+
+
+## 创建并暴露App组件
+
+```jsx
+// App.js
+import React,{Component} from 'react'
+export default class App extends Component{
+  render(){
+    return (
+      <div>
+        hello
+      </div>
+    )
+  }
+}
+```
+
+
+
+## 样式模块化
+
+```jsx
+//样式文件名：style.module.css
+//引入样式
+import style from 'style.module.css'
+//使用样式
+<div className={sytle.class-name} ><div>
+```
+
+
+
+## 代码提示
+
+> 安装插件es7 react/redux/graphQL
+
+
+
+
+
+## 组件创建流程
+
+> 1.拆分组件
+>
+> 2.实现静态组件
+>
+> 3.实现动态组件
+>
+> ​	a.
+
+
+
+
+
+## UUID
+
+```jsx
+//uuid大库
+npm i uuid
+//uuid小库
+yarn nanoid
+//使用
+import {nanoid} from 'nanoid'
+console.log(nanoid())
+```
+
+
+
+## PropTypes
+
+> //安装
+>
+> yarn add prop-types
+>
+> //引入
+>
+> import PropTypes from 'prop-types'
+
+
+
+## 类型约束
+
+```
+static propTypes = {
+	key: PropTypes.func.isRequred, //key函数为必选值
+	key1: PropTypes.array.isRequred, //key1数组为必选值
+}
+```
+
+
+
+
+
 # js语法
 
 
@@ -418,5 +569,9 @@ clearInterval(
 
 
 
+## 数组条件统计
 
+```
+reduce
+```
 
