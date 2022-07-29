@@ -1,5 +1,5 @@
 ```
-https://www.youtube.com/watch?v=DbDzHLIUiQk&list=PLmOn9nNkQxJFJXLvkNsGsoCUxJLqyLGxu&index=64
+https://www.youtube.com/watch?v=5Z0hp3LzW3k&list=PLmOn9nNkQxJFJXLvkNsGsoCUxJLqyLGxu&index=73
 
 未完成
 ```
@@ -519,6 +519,144 @@ static propTypes = {
 ```
 
 
+
+
+
+# axios
+
+
+
+## 安装
+
+> yarn add axios
+
+
+
+## 发送请求
+
+```jsx
+axios.get('').then(
+	response => {
+		//响应数据:reponse.data;
+	},
+	error => {
+		//错误信息:error
+	}
+)
+```
+
+
+
+## 代理转发
+
+
+
+### 单个代理
+
+```json
+//package.json添加代理
+{
+    "proxy":"http://localhost:5000"
+}
+```
+
+
+
+### 多个代理
+
+```js
+//创建文件src/setupProxy.js
+const proxy = require('http-proxy-middleware')
+module.exports = function(app){
+    app.use(
+    	proxy('/api1',{  //匹配路径
+            target:'http://localhost:5000', //转发给谁
+            changeOrigin:true,  //控制服务器收到的请求头HOST值
+            pathRewrite:{'^/api1':''} //重写请求路径，替换掉api1路径字串
+        })
+    )
+}
+```
+
+
+
+# fetch
+
+
+
+```
+fetch(url).then(
+	response => {
+		return response.json()
+	}, //联系服务器成功
+).then(
+	response => {},
+	error => {}
+).catch(
+	(error) => {}
+)
+```
+
+
+
+```
+fetch(url).then(
+	response => {
+		return response.json()
+	}, //联系服务器成功
+).then(
+	response => {},
+	error => {}
+).catch(
+	(error) => {}
+)
+```
+
+
+
+# 消息订阅
+
+
+
+## 安装PubSubJS
+
+```
+npm install  pubsub-js --save
+yarn add pubsub-js
+```
+
+
+
+## 引入
+
+```jsx
+import PubSub from 'pubsub-js'
+```
+
+
+
+## 订阅
+
+```jsx
+token = PubSub.subscribe('name', function(msg, data){} )
+token = PubSub.subscribe('name', (msg, data) => {} )
+```
+
+
+
+## 发布消息
+
+```jsx
+PubSub.publish('name',data)
+```
+
+
+
+## 取消订阅
+
+```jsx
+PubSub.unsubscribe(this.token )
+```
 
 
 
