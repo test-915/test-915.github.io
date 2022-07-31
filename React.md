@@ -1,5 +1,5 @@
 ```
-https://www.youtube.com/watch?v=5Z0hp3LzW3k&list=PLmOn9nNkQxJFJXLvkNsGsoCUxJLqyLGxu&index=73
+https://www.youtube.com/watch?v=IQhzYuw1ZvQ&list=PLmOn9nNkQxJFJXLvkNsGsoCUxJLqyLGxu&index=78
 
 未完成
 ```
@@ -657,6 +657,55 @@ PubSub.publish('name',data)
 ```jsx
 PubSub.unsubscribe(this.token )
 ```
+
+
+
+# 路由
+
+
+
+## 安装路由器
+
+> npm i react-router-dom
+
+
+
+## link
+
+```jsx
+//引入
+//BrowserRouter为h5路由
+//HashRouter为锚点路由
+import {link， BrowserRouter} from 'react-router-dom'
+import Index from ‘./components/Index’
+
+
+<BrowserRouter>
+	//创建链接
+	<Link classNmae='' to='/index'>首页</Link>
+	//注册路由
+	<Route path='/index' component={Index}/>
+</BrowserRouter>
+```
+
+
+
+## 路由装到index
+
+```jsx
+import {BrowserRouter} from 'react-router-dom'
+
+//index.js
+//不用在安装到组件内
+ReactDOM.render(
+	<BrowserRouter>
+        </App>
+	</BrowserRouter>,
+	document.getElementById('root')
+)
+```
+
+
 
 
 
