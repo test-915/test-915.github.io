@@ -1,5 +1,5 @@
 ```
-https://www.youtube.com/watch?v=IQhzYuw1ZvQ&list=PLmOn9nNkQxJFJXLvkNsGsoCUxJLqyLGxu&index=78
+https://www.youtube.com/watch?v=-bUzPp-U6uY&list=PLmOn9nNkQxJFJXLvkNsGsoCUxJLqyLGxu&index=87
 
 未完成
 ```
@@ -676,7 +676,7 @@ PubSub.unsubscribe(this.token )
 //引入
 //BrowserRouter为h5路由
 //HashRouter为锚点路由
-import {link， BrowserRouter} from 'react-router-dom'
+import {Link， BrowserRouter} from 'react-router-dom'
 import Index from ‘./components/Index’
 
 
@@ -703,6 +703,96 @@ ReactDOM.render(
 	</BrowserRouter>,
 	document.getElementById('root')
 )
+```
+
+
+
+## NavLink
+
+```jsx
+//实现link高亮效果,点击后class会带active属性
+import {NavLink} from 'react-router-dom'
+<NavLink classNmae='' to='/index'>首页</NavLink>
+
+//实现点击后追加class属性
+<NavLink activeClassName="active" classNmae='' to='/index'>首页</NavLink>
+```
+
+
+
+### 封装NavLink
+
+```jsx
+//创建组件MyNavLink
+import {NavLink} from 'react-router-dom'
+render (){
+	return (
+		<NavLink {...this.props} />
+	)
+}
+
+//引入组件到App
+<MyNavLink to="/index" a={a} b={b} c={c} >首页</MyNavLink>
+```
+
+
+
+## Switch
+
+```jsx
+//不渲染同一个路由的多个路径
+<Switch>
+    <Route path="/home" component={Home1} />
+    <Route path="/home" component={Home2} />
+</Switch>
+```
+
+
+
+## 匹配模式
+
+```jsx
+//模糊匹配
+<Route path="/home" component={Home1} />
+
+//精准匹配
+<Route exact={true} path="/home" component={Home1} />
+<Route exact path="/home" component={Home1} />
+```
+
+
+
+## 默认路由
+
+```jsx
+import {Redirect} from 'react-router-dom'
+
+<Switch>
+    <Route path='home' component={home} />
+    <Route path='home2' component={home2} />
+	<Redirect to='/home' />
+</Switch>
+```
+
+
+
+## 路由params传参
+
+```jsx
+//传参
+<Link to={`/detail/${id}`}>链接</Link>
+
+//声明接收
+<Route path="/detail/:id" component={Detail} />
+
+//组件接收
+const data = [
+    {id:'1',content:'正文'}
+]
+const {id} = this.props.match.params
+connst findResult = data.find((obj) => {
+    return obj.id === id	//数据id等于查询的id，则返回数据对象
+})
 ```
 
 
