@@ -1,5 +1,5 @@
 ```
-https://www.youtube.com/watch?v=-bUzPp-U6uY&list=PLmOn9nNkQxJFJXLvkNsGsoCUxJLqyLGxu&index=87
+https://www.youtube.com/watch?v=ABJr3AM4efI&list=PLmOn9nNkQxJFJXLvkNsGsoCUxJLqyLGxu&index=98
 
 未完成
 ```
@@ -776,7 +776,13 @@ import {Redirect} from 'react-router-dom'
 
 
 
-## 路由params传参
+## 路由传参
+
+
+
+### params传参
+
+> this.props.match.params
 
 ```jsx
 //传参
@@ -794,6 +800,247 @@ connst findResult = data.find((obj) => {
     return obj.id === id	//数据id等于查询的id，则返回数据对象
 })
 ```
+
+
+
+### search传参
+
+> this.props.location.search
+
+```jsx
+//传参
+<Link to={`/detail/?id=${id}`}>链接</Link>
+
+//正常注册路由
+<Route path="/detail" component={Detail} />
+
+/*引入querystring  qs讲urlencode 转 对象*/
+import qs from 'querystring'
+
+//组件接收
+const {search} = this.props.location
+const {id} = qs.parse(search.slice(1) )
+connst findResult = data.find((obj) => {
+    return obj.id === id	//数据id等于查询的id，则返回数据对象
+})
+```
+
+
+
+### state传参
+
+> this.props.location.state
+
+```jsx
+//传入对象给组件
+<Link to={{pathname:'/index', state:{id:obj.id} }}>链接</Link>
+    
+//正常注册路由
+<Route path="/detail" component={Detail} />
+
+//组件接受
+const {id} = this.props.location.state
+connst findResult = data.find((obj) => {
+    return obj.id === id	//数据id等于查询的id，则返回数据对象
+})
+```
+
+
+
+## 路由跳转
+
+> history有2种操作类型，PUST和REPLCE，路由跳转默认为PUSH，
+
+```jsx
+//开启replace跳转
+<Link replace={true} to={`/detail`}>链接</Link>
+```
+
+
+
+## 编程式路由导航
+
+
+
+### 跳转方法
+
+> 配合使用对应的传参模式params/search/state
+
+```jsx
+//replace跳转
+replaceShow = (id)=>{
+    this.props.history.replace(`/detail/${id}`)
+}
+<button onClick={ ()=>this.replaceShow(id) }>跳转</button>
+
+//push跳转
+pushShow = (id)=>{
+    this.props.history.push(`/detail/${id}`)
+}
+<button onClick={ ()=>this.pushShow(id) }>跳转</button>
+
+//state传参方法
+replaceShow = (id)=>{
+    this.props.history.replace(`/detail`, {id}) //传入路径和state对象
+}
+<button onClick={ ()=>this.replaceShow(id) }>跳转</button>
+```
+
+
+
+### 前进后退
+
+```jsx
+//前进
+() => {
+	this.props.history.goForward()
+}
+
+//后退
+() => {
+	this.props.history.goBack()
+}
+
+//前进或后退n步，负数为后退
+(n) => {
+    this.props.history.go(n)
+}
+```
+
+
+
+## 一般组件使用路由组件
+
+```jsx
+//给一般组件引入withRouter
+import {withRouter} from 'react-router-dom'
+
+class Header extends Component {	
+}
+
+//暴露withRouter返回的组件
+export default withRouter(Header)
+```
+
+
+
+
+
+# UI组件库
+
+> 国外用material-ui
+>
+> 国内用蚂蚁金服的ant-design
+>
+> 饿了吗UI：element ui
+>
+> 有赞UI：vant 针对移动端
+
+
+
+## 安装
+
+```
+yarn add antd
+```
+
+
+
+## 引入样式
+
+```jsx
+import 'antd/dist/antd.css'
+```
+
+
+
+## 按需引入
+
+> 按需引入需要先执行，修改配置文件流程
+
+
+
+### 安装
+
+```
+$ yarn add craco-less
+```
+
+
+
+### 修改配置
+
+```jsx
+/*craco.config.js*/
+const CracoLessPlugin = require('craco-less');
+
+module.exports = {
+  plugins: [
+    { /*以下配置修改primary-color*/
+      plugin: CracoLessPlugin,
+      options: {
+        lessLoaderOptions: {
+          lessOptions: {
+            modifyVars: { '@primary-color': '#1DA57A' },
+            javascriptEnabled: true,
+          },
+        },
+      },
+    },
+  ],
+};
+```
+
+
+
+# 修改配置文件
+
+> 用不显示webpack隐藏文件的方式修改配置文件
+
+
+
+### 安装
+
+```
+$ yarn add @craco/craco
+```
+
+
+
+### 修改
+
+```json
+/* package.json */
+"scripts": {
+    /*删除*/
+-   "start": "react-scripts start",
+-   "build": "react-scripts build",
+-   "test": "react-scripts test",
+    /*新增*/
++   "start": "craco start",
++   "build": "craco build",
++   "test": "craco test",
+}
+```
+
+
+
+### 创建
+
+```js
+/* craco.config.js */
+module.exports = {
+  // ...
+};
+```
+
+
+
+# Redux
+
+> 组件间通信
+>
+> 集中式状态管理
 
 
 
