@@ -1,5 +1,5 @@
 ```
-https://www.youtube.com/watch?v=ABJr3AM4efI&list=PLmOn9nNkQxJFJXLvkNsGsoCUxJLqyLGxu&index=98
+https://www.youtube.com/watch?v=ssLYXXStf-Q&list=PLmOn9nNkQxJFJXLvkNsGsoCUxJLqyLGxu&index=110
 
 未完成
 ```
@@ -1043,6 +1043,303 @@ module.exports = {
 > 集中式状态管理
 
 
+
+## 安装
+
+```
+yarn add redux
+```
+
+
+
+## Shore
+
+> shore.js专门用于暴露一个shore对象，整个应用只有一个shore对象
+
+```jsx
+// src/redux/store.js
+//引入createStore
+import {createStore} from 'redux'
+//引入为shore服务的reducer功能文件
+//例如处理count的reducer命名为countReducer
+import {countReducer} from './count_reducer'
+
+export default createStore(countReducer)
+```
+
+
+
+## Reducer
+
+> Reducer本质是函数
+
+```jsx
+/* 创建用于处理count的count_reducer.js文件 */
+const initState = 0 //初始化赋值方法1 
+export default function countReducer(preState=initState, action){ //传入之前的状态 和 动作对象
+    /* 初始化方法2
+    if(preState == undefined) preState = 0 // 初始化赋值
+    */
+	const {type, data} = action
+    // 根据type决定如何加工数据
+    switch (type){
+        case 'increment':
+            return preState + data
+        case 'decrement':
+            return preState - data
+        default: //返回初始化值
+            return preState
+    }
+}
+```
+
+
+
+## 获取状态
+
+```jsx
+//组件中引入store
+return (
+    <div>
+    	{store.getState()} //从shore获取状态
+    </div>
+)
+```
+
+
+
+## 创建action对象
+
+```jsx
+shore.dispatch({type:'increment', data:value })
+//value将进行increment类型的加工
+```
+
+
+
+## 检测状态
+
+
+
+### 组件内检测
+
+```jsx
+componentDidMount(){
+	//检测redux状态变化，只要变化就调用render
+	store.subscribe(()=>{
+		this.setState({})
+	})
+}
+```
+
+
+
+### 全局检测
+
+```jsx
+/* index.js */
+import store from './redux/store'
+
+//redux发生变化，渲染整个app
+store.subscribe(()=>{
+    ReactDom.render(
+        <App/>,
+        document.getElementById('root')
+    )
+})
+```
+
+
+
+## Action对象
+
+
+
+### 同步action
+
+```jsx
+/* 处理count的action对象，创建count_action.js文件 */
+
+// 处理Increment方法的action对象
+export const createIncrementAction = data => ({type:'increment', data})
+```
+
+
+
+### 异步action
+
+> 依赖中间件
+>
+> 安装：yarn add redux-thunk
+
+```jsx
+export const createIncrementAsyncAction = (data, time) => {
+    //返回一个函数给shore，shore会调用这个函数并传入dispatch
+	return (dispatch)=> {
+		setTimeout( ()={ 
+            //时间一到，触发dispatch，传入action的一般对象
+			dispatch(createIncrementAction(data))
+		},time)
+	}
+}
+```
+
+```jsx
+/* store.js */
+/*  引入thunk */
+import thunk from 'redux-thunk'
+/* 引入中间件 */
+import {applyMiddleware} from 'redux'
+
+//暴露shore时，应用中间件
+export default  createStore(countReducer, applyMiddleware(thunk) )
+
+```
+
+
+
+
+
+# React-Redux
+
+
+
+## 安装
+
+> yarn add react-redux
+
+
+
+## 容器
+
+
+
+### 完整容器
+
+```jsx
+/* 创建名为Count的容器组件containers/Count/index.jsx */
+//引入名为Count的UI组件
+import CountUI from '../../components/Count'
+//引入connect用于连接UI组件与redux
+import {connect} from 'react-redux'
+//引入名为Increment的aciton对象
+import {createIncrementAction} from '../../redux/count_action'
+
+/*
+mapStateToprops返回给UI组件的状态，
+容器组件会自动调用shore获取state 并传递给a函数
+*/
+const mapStateToprops = (state)=>{
+    //返回的对象类似于props，key作为UI组件的状态属性名，val作为UI组件的状态属性值
+    return {key:state}
+}
+
+/*
+b返回操作状态的方法,自动调用shore获取dispatch
+*/
+const mapDispatchToprops = (dispatch)=>{
+    return {
+        //创建一个jia的方法
+        jia:(data)=>{//传入dispatch需要的数据
+            //通知redux执行加法
+            dispatch(createIncrementAction(data))
+        }
+    }
+}
+
+//获取名为Count的容器组件,传入props
+export default connect( mapStateToprops,mapDispatchToprops )(CountUI)
+```
+
+
+
+### 容器代码简化
+
+```jsx
+/* 创建名为Count的容器组件containers/Count/index.jsx */
+//引入名为Count的UI组件
+import CountUI from '../../components/Count'
+//引入connect用于连接UI组件与redux
+import {connect} from 'react-redux'
+//引入名为Increment的aciton对象
+import {createIncrementAction} from '../../redux/count_action'
+
+
+//获取名为Count的容器组件,传入props
+export default connect( 
+    state => ({key:state}),
+    dispatch => (
+        jia:(data)=> dispatch(createIncrementAction(data))
+	)
+)(CountUI)
+```
+
+
+
+### API容器简化
+
+```jsx
+/* 创建名为Count的容器组件containers/Count/index.jsx */
+//引入名为Count的UI组件
+import CountUI from '../../components/Count'
+//引入connect用于连接UI组件与redux
+import {connect} from 'react-redux'
+//引入名为Increment的aciton对象
+import {createIncrementAction} from '../../redux/count_action'
+
+
+//获取名为Count的容器组件,传入props
+export default connect( 
+    state => ({key:state}),
+    /*
+    	直接传入对象，value不调用函数，直接用函数赋值，
+    	react-redux会自动调用dispatch传入value执行
+    */
+    {
+        jia:createIncrementAction
+	}
+)(CountUI)
+```
+
+
+
+## 使用容器
+
+```jsx
+/* 在上级组件传入容器组件 */
+import store from './redux/store'
+
+export default class App extends Component {
+	render() {
+        return (
+            <div>
+            	<Count store={store} />
+            </div>
+        )
+    }
+}
+```
+
+
+
+## 一次性传递store
+
+```jsx
+import {Provider} from 'react-redux'
+//Provider将store传递给app里面的所有容器
+ReactDOM.render(
+	<Provider store={store}>
+		<App/>
+	</Provider>,
+    document.getElementById('root')
+)
+```
+
+
+
+## 检测状态
+
+> 使用react-redux不需要再通过store.subscribe检测状态，connect已经实现检测
 
 
 
