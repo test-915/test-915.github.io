@@ -1,7 +1,7 @@
 ```
-https://www.youtube.com/watch?v=ssLYXXStf-Q&list=PLmOn9nNkQxJFJXLvkNsGsoCUxJLqyLGxu&index=110
+https://www.youtube.com/watch?v=7zFTrR7epO0&list=PLmOn9nNkQxJFJXLvkNsGsoCUxJLqyLGxu&index=126
 
-未完成
+完成
 ```
 
 
@@ -476,8 +476,6 @@ import style from 'style.module.css'
 > 2.实现静态组件
 >
 > 3.实现动态组件
->
-> ​	a.
 
 
 
@@ -1340,6 +1338,287 @@ ReactDOM.render(
 ## 检测状态
 
 > 使用react-redux不需要再通过store.subscribe检测状态，connect已经实现检测
+
+
+
+## 数据集合
+
+```jsx
+/* store */
+import {applyMiddleware, combineReducers} from 'redux'
+import thunk from 'redux-thunk'
+
+//创建redux要存储的总数据对象
+const allReducer = combineReducers({
+	a:aReducer,
+	b:bReducer,
+})
+export default createStore(allReducer, applyMiddleware(thunk))
+```
+
+
+
+## 纯函数
+
+> redux中reducer函数必须是一个纯函数
+
+
+
+## Redux开发者工具
+
+> 浏览器安装Redux DevTools
+>
+> 服务端同时也要安装
+>
+> yarn add redux-devtools-extension
+
+```jsx
+//引入redux开发者工具
+import {composeWithDevTools} from 'redux-devtools-extension'
+export default createStore(
+	allReducer,
+	composeWithDevTools(applyMiddleware(thunk))
+)
+```
+
+
+
+# 扩展
+
+
+
+## setState
+
+
+
+### 对象式setState
+
+> setState执行完render后会触发回调
+>
+> setState(【对象】,[回调函数])
+
+
+
+### 函数式setState
+
+```jsx
+//可以传入状态和props
+this.setState( (state, props)=>{
+    return {key:'val'}
+},[callback] )
+```
+
+
+
+
+
+## 懒加载lazyload
+
+```jsx
+import {lazy, Suspense} from 'react'
+
+//懒加载方式引入组件
+const Home = lazy( ()=> import('./Home') )
+
+<Suspense fallback={<h1>加载中显示的一个组件</h1>}>
+    <Route path=='/home' component={Home} />
+</Suspense>
+```
+
+
+
+## Hook
+
+
+
+### state
+
+```jsx
+
+const [a,setA] = React.useState(0) //重复执行不会覆盖a
+//a为状态初始值，b为更新状态的方法
+function add(){
+    //方法一,传入状态
+    setA(a+1)
+    //方法二，传入状态方法
+    setA( (a)=>{return a+1})
+}
+//触发add()执行setA，会让状态值从a更新为a+1
+```
+
+
+
+### Effect生命周期
+
+
+
+### 状态更新
+
+```jsx
+React.useEffect(()=>{
+	run()
+},[检测对象数组])
+//没有检测对象，会检测所有对象，
+//检测对象为空，则不检测；
+//检测对象发生改变，将触发该函数；
+```
+
+
+
+### 状态更新后
+
+```jsx
+React.useEffect(()=>{
+    let run = ()=>{...}
+	return ()=>{
+		clearInterval(run)
+	}
+},[检测对象数组])
+//状态卸载将触发return返回的函数,
+```
+
+
+
+### Ref
+
+```jsx
+const myRef = React.useRef()
+return (){
+	<div>
+        <div ref={myRef}></div>
+    </div>
+}
+```
+
+
+
+## 碎片忽略标签
+
+```jsx
+import React,{Fragent} from 'react'
+return(){
+	<Fragment key={1}>//key识别标签唯一特性，选填
+		<div>内容1</div>
+		<div>内容2</div>
+		//Fragment标签不会渲染到页面上,只会显示标签内的结构
+	</Fragement>
+}
+```
+
+
+
+## context祖孙组件通信
+
+
+
+### 类式组件专用context
+
+```jsx
+//创建Context对象
+const MyContext = React.createContext()
+
+//祖先组件A
+render() {
+    return (
+    	<div>
+            <MyContext.Provider value={val}>{//传入孙子们需要的value},传入多组数据可以使用对象
+            	<B/>
+            </MyContext.Provider>
+        </div>
+    )
+}
+                
+//所有子孙组件都能通过声明收到数据
+//声明接收：
+static contextType = MyContext
+//获取数据
+this.context
+```
+
+
+
+### 通用式context
+
+```jsx
+//创建Context对象
+const MyContext = React.createContext()
+
+//祖先组件A
+render() {
+    return (
+    	<div>
+            <MyContext.Provider value={val}>{//传入孙子们需要的value},传入多组数据可以使用对象
+            	<B/>
+            </MyContext.Provider>
+        </div>
+    )
+}
+                
+//所有子孙组件通过Consumer接收
+render() {
+	return (
+		<div>
+            <Consumer>
+            	{
+                    value => {
+                        return `名字是${value.name}`
+                    }
+                }
+            </Consumer>
+		</div>
+	)
+}
+```
+
+
+
+## PureComponent
+
+> 重写Component的阀门
+>
+> props和state没变化的时候，不继续执行
+>
+> 直接用PureComponent替换掉Component
+>
+> 对象地址与旧的地址一样，也不继续执行。
+>
+> 不要直接修改数据，要产生新数据。
+
+
+
+## renderProps插槽
+
+```jsx
+<A render={(name)=><B name={name} />} />
+
+//在A组件中，通过render获取子组件，可以传参
+{this.props.render(name)}
+```
+
+
+
+
+
+## 错误边界
+
+
+
+```jsx
+//组件内
+state = {
+    hassError:fales//初始化错误信息
+} 
+//触发错误
+static getDerivedState FromError(error){
+    console.log(error)//打印错误
+    //返回新的static
+	return {hassError:true}//改写状态为错误展示信息
+}
+//发生错误触发统计方法
+componentDidCatch(){
+    console.log('发送错误信息给服务器')
+}
+```
 
 
 
