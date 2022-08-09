@@ -1,5 +1,7 @@
 ```
-https://www.youtube.com/watch?v=vCDl0XkkZzQ&list=PLmOn9nNkQxJEARHuEpVayY6ppiNlkvrnb&index=40
+https://www.youtube.com/watch?v=Edh07NHlZc4&list=PLmOn9nNkQxJEARHuEpVayY6ppiNlkvrnb&index=46
+
+完成
 ```
 
 
@@ -793,13 +795,99 @@ Vue.filter('mySlice',function(value){
 
 
 
-## 标签体
+## 标签体文本
 
 ```
 v-text
 ```
 
 
+
+## 标签体结构文本
+
+```
+v-html
+```
+
+
+
+## 解析前样式
+
+```html
+<style>
+    [v-cloak]{}
+</style>
+<div v-cloak></div>
+v-cloak在解析页面后自动移除
+```
+
+
+
+## 读取1次
+
+```html
+<div v-once>{{n}}</div>
+```
+
+
+
+## 跳过解析
+
+```html
+<div v-pre="n">{{n}}</div>
+```
+
+
+
+# 自定义指令
+
+
+
+## 简单方法
+
+```html
+<div v-big>
+    
+</div>
+<script>
+new Vue({
+    directives:{
+        big(element,binding){//传入真实dom，和一个binding绑定对象
+            element.innerText = binding.value * 10 //原生js操作节点
+            //实现效果value*10
+        }
+    }
+})
+</script>
+```
+
+
+
+## 完整方法
+
+```html
+<script>
+new Vue({
+    directives:{
+        fbind:{
+            //用简写的方式，相当于调用bind和update
+        	//指定与元素绑定时(一上来)
+        	bind(element,value){
+        		element.value = binding.value
+        	},
+            //指令插入页面
+        	inserted(element,value){
+        		element.focus()
+        	},
+            //模板被重新解析时
+            update(element,value){
+                element.value = binding.value
+            }
+        }
+    }
+})
+</script>
+```
 
 
 
