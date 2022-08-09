@@ -1,5 +1,5 @@
 ```
-https://www.youtube.com/watch?v=rmoSGnyE8sY&list=PLmOn9nNkQxJEARHuEpVayY6ppiNlkvrnb&index=20
+https://www.youtube.com/watch?v=vCDl0XkkZzQ&list=PLmOn9nNkQxJEARHuEpVayY6ppiNlkvrnb&index=40
 ```
 
 
@@ -143,6 +143,69 @@ new Vue({
 
 
 
+# 监视属性
+
+
+
+## 通过对象监视
+
+```js
+const vm = new Vue({
+    watch:{
+        //可以监视对象属性，也可以监视计算属性computed
+        isHot:{
+            //再isHot发生改变时，调用handler，并传入新值和旧值
+            handler(newValue, oldValue){
+                
+            }
+            //是否初始化时调用，默认为false，不立刻执行
+            immdiate:true,
+        }
+    }
+})
+
+//简写，只需要handler不需要其他属性的监视，可以简写
+const vm = new Vue({
+    watch:{
+        isHot(newValue, oldValue){
+        }
+    }
+})
+```
+
+
+
+## 通过实例监视
+
+```js
+coust vm = new Vue({})
+vm.$watch('isHot',{
+    handler(){}
+})
+
+//简写，只需要handler不需要其他属性的监视，可以简写
+coust vm = new Vue({})
+vm.$watch('isHot',function(newValue, oldValue){
+    
+})
+```
+
+
+
+## 深度监视
+
+```js
+const vm = new Vue({
+    watch:{
+        dic:{
+            //是否开启深度监视，监视多级结构dic对象中的所有属性变化，
+            //默认为false只监视dic本身而不监视多级结构中的对象内部。
+            deep:true,
+        }
+    }
+})
+```
+
 
 
 # 数据绑定
@@ -166,6 +229,142 @@ new Vue({
 <div v-model:id=id ></div>
 简写
 <div v-model=id ></div>
+```
+
+
+
+### 双向绑定修饰符
+
+```vue
+//指定数据为数字
+<div v-model.number=id ></div>
+```
+
+
+
+### 懒收集表单
+
+```vue
+//失去焦点再收集数据
+<div v-model.lazy=id ></div>
+```
+
+
+
+### 去掉表单空格
+
+```vue
+//失去焦点再收集数据
+<div v-model.trim=id ></div>
+```
+
+
+
+# 绑定样式
+
+
+
+## 绑定class
+
+
+
+### 字符串方式
+
+> 场景：类名不确定，需要动态指定
+
+```html
+<div :class='mood' @click='changeMood'></div>
+
+<script>
+    new Vue({
+        data:{
+            mood:'normal'
+        },
+        methods:{
+            changeMood(){
+                //点击后，触发mood样式变更为happy
+                this.mood = 'happy'
+            }
+        }
+    })
+</script>
+```
+
+
+
+### 数组方式
+
+> 场景：样式个数不确定，名字不确定
+
+```html
+<div :class='mood' @click='changeMood'></div>
+
+<script>
+    new Vue({
+        data:{
+            mood:['c1', 'c2', 'c3']
+        }
+    })
+</script>
+```
+
+
+
+
+
+### 对象方式
+
+> 场景：样式个数不确定，名字不确定
+
+```html
+<div :class='mood' @click='changeMood'></div>
+
+<script>
+    new Vue({
+        data:{
+            mood:{
+                c1:true, //true和false代表样式是否启用
+                c2:false
+            }
+        }
+    })
+</script>
+```
+
+
+
+## 绑定style
+
+
+
+### 字符串方式
+
+```html
+<div :style="{fontSize:fsize+'px'}" ></div>
+```
+
+
+
+### 对象方式
+
+```html
+<div :style="styleObj" ></div>
+
+<script>
+	new Vue({
+        styleObj:{
+            fontSize:40px
+        }
+    })
+</script>
+```
+
+
+
+### 数组方式
+
+```html
+<div :style="[styleObj,styleObj2]" ></div>
 ```
 
 
@@ -342,4 +541,298 @@ wheel是滚动触发事件，加了passive后不再等待showInfo事件，直接
 同时按下ctrl+y才会触发
 <input @keyup.ctrl.y="showInfor" />
 ```
+
+
+
+# 条件渲染
+
+
+
+## 隐藏
+
+```html
+v-show接受表达式，为true显示，为false隐藏
+<div v-show='isShow'></div>
+<div v-show='1 === 1'></div>
+
+<script>
+	new Vue({
+        data:{
+            isShow:false
+        }
+    })
+</script>
+```
+
+
+
+## 不加载
+
+```html
+v-if，为true加载，为false不加载
+if和else 不能打断，要紧挨着
+<div v-if='isLoad'></div>
+<div v-else-if='1 === number'></div>
+<div v-else-if='2 === number'></div>
+<div v-else=''>else不需要条件</div>
+
+只做判断，不添加节点
+<template v-if='isLoad'>
+    不显示template节点
+</template>
+
+<script>
+	new Vue({
+        data:{
+            isLoad:false
+        }
+    })
+</script>
+```
+
+
+
+# 列表渲染
+
+
+
+## 遍历数组
+
+```html
+<ul>
+    <li v-for="p in persons" :key="p.id">
+    	{{p.name}}
+    </li>
+    带index的遍历
+    <li v-for="(p,index) in persons" :key="index">
+    	{{p.name}}
+    </li>
+</ul>
+```
+
+
+
+
+
+## 遍历对象
+
+```html
+<ul>
+    <li v-for="(value, key) in persons" :key="p.key">
+    	{{value}}
+    </li>
+</ul>
+```
+
+
+
+## 遍历次数
+
+
+
+```html
+<ul>
+    <li v-for="(number, index) in 5" :key="p.index">
+    	{{number}}
+    </li>
+</ul>
+
+
+```
+
+
+
+
+
+
+
+## 列表过滤
+
+
+
+
+
+### 监视属性实现
+
+```html
+<script>
+	new Vue({
+        data:{
+            keyWord:'',
+            persons:['','',''],
+            filPersons:[]
+        },
+        watch:{
+            keyWord:{
+                immediate:true,
+            	headler(val){
+                    this.filPersons = this.persons.filter((p)=>{
+                        return p.name.indexOf(val) !== -1
+                    }
+                }
+            }
+        }
+    })
+</script>
+```
+
+
+
+### 计算属性实现
+
+```html
+<script>
+	new Vue({
+        data:{
+            keyWord:'',
+            persons:['','',''],
+            filPersons:[]
+        },
+        computed:{
+            filPersons(){
+                return this.persons.filter((p)=>{
+                    return p.name.indexOf(this.keyWord) !== -1
+                })
+            }
+        }
+    })
+</script>
+```
+
+
+
+## 列表排序
+
+```html
+<script>
+	new Vue({
+        data:{
+            keyWord:'',
+            persons:['','',''],
+            filPersons:[],
+            sortType:0,
+        },
+        computed:{
+            filPersons(){
+                const arr = this.persons.filter((p)=>{
+                    return p.name.indexOf(this.keyWord) !== -1
+                })
+                if(this.sortType){
+                    arr.sort((a,b)=>{
+                        return this.sortType === 1 ? a.age-b.age : b.age-a.age
+                    })
+                }
+                return arr
+            }
+        }
+    })
+</script>
+```
+
+
+
+# 追加属性
+
+```js
+//实例追加
+Vue.set(vm.student,'sex','男') //再student属性中添加sex为男的属性
+vm.$set(vm.student,'sex','男') //同理
+
+
+//对象内部
+const vm = new Vue({
+    data:{student:{}},
+    methods:{
+        addSex(){
+            this.$set(this.student,'sex','男')
+        }
+    }
+})
+```
+
+
+
+# 过滤器
+
+
+
+## 调用过滤器
+
+```html
+{{time | timeFormater}} 
+timeFormater可以传参，将作为过滤器的第二个参数，第一个参数是管道符前的参数
+```
+
+
+
+## 配置过滤器
+
+```js
+new Vue({
+	filters:{
+		timeFormater(value,str='YYYY年MM月DD日 HH:mm:ss'){
+            return dayjs(value).format(str) //dayjs依赖三方库
+        }
+	}
+})
+```
+
+
+
+## 全局过滤器
+
+```
+Vue.filter('mySlice',function(value){
+	return value.slice(0,4)
+})
+```
+
+
+
+# 内置指令
+
+
+
+## 标签体
+
+```
+v-text
+```
+
+
+
+
+
+# Vscode插件
+
+> vue 3 snippets 代码片段 作者：hollowtree
+
+ 
+
+# JS语法
+
+
+
+## 数组过滤
+
+```js
+persons.filter((p)=>{
+	return p.name.indexOf(val) !== -1
+    //p.name.indexOf(val)
+    //判断p中是否包含val ，返回-1为不包含，返回其他则为匹配值的索引
+})
+```
+
+
+
+## 数组排序
+
+```js
+arr.sort((a,b)=>{
+	return a-b //升序
+	return b-a //降序
+})
+```
+
+
 
