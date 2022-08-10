@@ -1,5 +1,5 @@
 ```
-https://www.youtube.com/watch?v=Edh07NHlZc4&list=PLmOn9nNkQxJEARHuEpVayY6ppiNlkvrnb&index=46
+https://www.youtube.com/watch?v=EkYOrRXVk1U&list=PLmOn9nNkQxJEARHuEpVayY6ppiNlkvrnb&index=60
 
 完成
 ```
@@ -891,6 +891,177 @@ new Vue({
 
 
 
+## 全局指令
+
+```js
+Vue.directive('fbind',{
+	bind(){},
+    inserted(){},
+    update(){}
+})
+```
+
+
+
+# 生命周期
+
+
+
+## 挂载流程
+
+```js
+new Vue({
+    beforeCreate(){},
+    created(){},
+	beforeMount(){},
+	mounted(){},
+})
+```
+
+
+
+## 更新流程
+
+```js
+new Vue({
+    beforeUpdate(){},
+    updated(){},
+})
+```
+
+
+
+
+
+## 更新流程
+
+```js
+new Vue({
+    beforeUpdate(){},
+    updated(){},
+})
+```
+
+
+
+
+
+## 销毁流程
+
+```js
+new Vue({
+    beforeDestroy(){},
+    destroy(){},
+})
+```
+
+
+
+
+
+## 销毁实例
+
+```js
+vm.$destroy()
+```
+
+
+
+# 组件
+
+
+
+## 创建组件
+
+```js
+const school = Vue.extend({
+    name:'sbc',//自定义名称用于开发者工具
+	data(){
+        return {}
+    }
+})
+
+//简写
+const school = {
+    name:'sbc',//自定义名称用于开发者工具
+	data(){
+        return {}
+    }
+}
+```
+
+
+
+## 注册组件
+
+```js
+new Vue(
+	components:{
+		xuexiao:school
+	}
+)
+```
+
+
+
+## 使用组件
+
+```html
+//组件标签：
+<xuexiao></xuexiao>
+```
+
+
+
+## 嵌套组件
+
+```
+//父组件
+const school = {
+    name:'sbc',//自定义名称用于开发者工具
+	data(){
+        return {}
+    },
+    components:{
+    	student//子组件
+    }
+}
+```
+
+
+
+# 单文件组件
+
+
+
+## vue文件插件
+
+> vetur 作者pine wu
+>
+> 快捷键：<v
+
+
+
+## 编辑vue文件
+
+```vue
+//创建文件.vue
+<timeplate>
+</timeplate>
+
+<script>
+    export default {
+        //组件体
+        name:''
+    }
+</script>
+
+<style>
+</style>
+```
+
+
+
 # Vscode插件
 
 > vue 3 snippets 代码片段 作者：hollowtree
@@ -921,6 +1092,8 @@ arr.sort((a,b)=>{
 	return b-a //降序
 })
 ```
+
+
 
 
 
