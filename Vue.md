@@ -1,7 +1,7 @@
 ```
-https://www.youtube.com/watch?v=EkYOrRXVk1U&list=PLmOn9nNkQxJEARHuEpVayY6ppiNlkvrnb&index=60
+https://www.youtube.com/watch?v=UqdZtCrmeOk&list=PLmOn9nNkQxJEARHuEpVayY6ppiNlkvrnb&index=81
 
-完成
+未完成
 ```
 
 
@@ -1062,6 +1062,309 @@ const school = {
 
 
 
+# 脚手架
+
+
+
+## 安装
+
+> npm install -g @vue/cli
+
+
+
+## 创建项目
+
+> vue create appname
+
+
+
+## 启动项目
+
+> npm run serve
+
+
+
+## 模板解析器
+
+> 脚手架创建项目时，默认引入vue模块，module引入的模块残缺了模板解析器
+>
+> 造成main.js无法使用template
+>
+> 解决方法是指定引入完整版vue的路径，或者使用render
+
+```js
+//方法一：引入完整vue
+import Vue from 'vue/dist/vue'
+
+//方法二：render
+new Vue({
+    render(createElement){
+        return createElement('h1', '标题')
+    }
+})
+//简写
+new Vue({
+    render: h => h(App)
+})
+```
+
+
+
+## 配置文件
+
+> 创建文件vue.config.js
+>
+> 复写配置找官网
+
+
+
+## Ref标签属性
+
+```vue
+配置ref
+<div ref='abc'></div>
+
+获取元素
+this.$refs.abc
+```
+
+
+
+## 父子传参
+
+
+
+### 父传子
+
+```js
+子组件声明接收参数
+student = {
+	//简单接收
+	props:['name','age','sex']
+	//条件约束接收
+	props:{
+		name:String,
+		age:Number,
+		sex:String
+	},
+	//复杂接收
+	props:{
+		name:{
+			type:String,
+			required:true//是否必须
+		},
+		name:{
+			type:Number,
+			default:99 //指定默认值
+		},
+	}
+}
+
+父组件传参数
+<student name='n' :age='19' sex='m' >
+:age值将作为表达式结果返回参数，返回数字19
+age值将作为字符串，返回字符串19
+```
+
+
+
+### 子传父
+
+> 父组件提前传递一个用于修改父组件状态的函数给子组件，子组件调用这个函数用于修改父组件
+
+
+
+## 改参数
+
+> props不允许修改，只能通过初始化给data传参，再修改data参数值
+
+```
+vc = {
+	props:['name'],
+	data(){
+		return {
+			name:this.name
+		}
+	}
+}
+```
+
+
+
+## 混入
+
+
+
+### 局部混入
+
+```
+// 定义混入对象
+const myMixin = {
+  created() {
+    this.hello()
+  },
+  methods: {
+    hello() {
+      console.log('欢迎来到混入实例-RUNOOB!')
+    }
+  }
+}
+ 
+// 定义一个应用，使用混入
+const app = Vue.createApp({
+  mixins: [myMixin]
+})
+```
+
+
+
+### 全局混入
+
+```js
+const app = Vue.createApp({
+  myOption: 'hello!'
+})
+ 
+// 为自定义的选项 'myOption' 注入一个处理器。
+Vue.mixin({
+  created() {
+    const myOption = this.$options.myOption
+    if (myOption) {
+      document.write(myOption)
+    }
+  }
+})
+```
+
+
+
+## 插件
+
+```js
+//创建plugin.js
+export default {
+    install(Vue,a,b,c){
+        //...插件任务
+    }
+}
+    
+//使用插件
+import plugins from './plugins'
+Vue.use(plugins,a,b,c)
+```
+
+
+
+## 样式作用域
+
+```vue
+<style scoped>
+    /*样式作用限制在插件内*/
+</style>
+```
+
+
+
+# 组件编码
+
+
+
+## 流程
+
+> 1.实现静态组件
+>
+> 2.转化为动态组件
+>
+> ​	2.1.数据的类型、名称是什么
+>
+> ​	2.2.数据要保存哪些组件
+>
+> 3.交互，绑定事件监听
+
+
+
+## 条件输出属性
+
+> 不知道标签是否需要属性，动态输出这个标签属性
+
+```
+<input type="checkbox" :checked="is_check" />
+
+export default {
+	data:{
+		return {
+			is_check:true
+		}
+	}
+}
+```
+
+
+
+# 本地存储
+
+> localStorage
+>
+> sessionStorage
+
+
+
+### localStorage
+
+```js
+localStorage.setItem('key','val')
+localStorage.getItem('key')
+localStorage.removeItem('key')
+localStorage.clearItem('key')//清空所有
+```
+
+
+
+### sessionStorage
+
+> 浏览器一关就没了
+
+```js
+sessionStorage.setItem('key','val')
+sessionStorage.getItem('key')
+sessionStorage.removeItem('key')
+sessionStorage.clear()//清空所有
+```
+
+
+
+# 自定义事件
+
+> 实现父组件给子组件绑定自定义事件
+
+
+
+### v-on绑定
+
+```
+//绑定事件
+<Student v-on:test='demo'>//demo为父组件事件
+
+export default {
+	mothods:{
+		sendStudent(){
+			//触发方法
+			this.$.emit('test')
+		}
+	}
+}
+```
+
+
+
+### ref绑定
+
+```
+this.$refs.student.$on('refs标签',事件)
+```
+
+
+
 # Vscode插件
 
 > vue 3 snippets 代码片段 作者：hollowtree
@@ -1095,5 +1398,13 @@ arr.sort((a,b)=>{
 
 
 
+## 随机数
 
+> uuid
+>
+> npm i nanoid
+
+```
+import {nanoid} from ‘namoid’
+```
 
