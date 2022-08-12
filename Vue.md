@@ -1,5 +1,5 @@
 ```
-https://www.youtube.com/watch?v=UqdZtCrmeOk&list=PLmOn9nNkQxJEARHuEpVayY6ppiNlkvrnb&index=81
+https://www.youtube.com/watch?v=R4L_nEp9hz0&list=PLmOn9nNkQxJEARHuEpVayY6ppiNlkvrnb&index=103
 
 未完成
 ```
@@ -1309,7 +1309,7 @@ export default {
 
 
 
-### localStorage
+## localStorage
 
 ```js
 localStorage.setItem('key','val')
@@ -1320,7 +1320,7 @@ localStorage.clearItem('key')//清空所有
 
 
 
-### sessionStorage
+## sessionStorage
 
 > 浏览器一关就没了
 
@@ -1339,17 +1339,28 @@ sessionStorage.clear()//清空所有
 
 
 
-### v-on绑定
+## 原生事件
+
+> 给组件绑定事件时，vue会把原生事件当成自定义事件，需要通过native修饰符声明
 
 ```
-//绑定事件
+<Student @click.native='show'>
+```
+
+
+
+## v-on绑定
+
+```
+//父组件绑定事件
 <Student v-on:test='demo'>//demo为父组件事件
 
+//在子组件触发事件
 export default {
 	mothods:{
 		sendStudent(){
 			//触发方法
-			this.$.emit('test')
+			this.$emit('test')
 		}
 	}
 }
@@ -1357,11 +1368,273 @@ export default {
 
 
 
-### ref绑定
+## ref绑定
 
 ```
-this.$refs.student.$on('refs标签',事件)
+//父组件传递事件给子组件：
+export default{
+	mouted(){
+		//挂在后执行
+		this.$refs.student.$on('refs标签',事件)
+		//事件可以methods对象里的一个函数
+		this.$refs.student.$on('refs标签',this.getSchoolName)
+		//也可以是一个箭头函数，
+		//但不能是普通函数，否则this将指向调用函数的那个组件
+		this.$refs.student.$on('refs标签',(name,...params)=>{
+			//...
+		})
+	}
+}
+
+//子组件的绑定与解绑参考v-on
 ```
+
+
+
+
+
+## 解绑
+
+```
+//绑定事件
+<Student v-on:test='demo'>//demo为父组件事件
+
+export default {
+	mothods:{
+		unbind(){
+			//解绑
+			this.$off('test')
+			//解绑多个
+			this.$off(['test','test1'])
+			//解绑全部事件
+			this.$off()
+		}
+	}
+}
+```
+
+
+
+# 全局事件总线
+
+
+
+## 安装总线
+
+```
+//入口文件引入vue时配置全局事件
+new Vue({
+	//在创建组件前传递全局事件$bus到Vue原型里
+	beforeCreate(){
+		Vue.prototype.$bus = this
+	}
+})
+```
+
+
+
+## 绑定事件
+
+```
+//通过on在x身上绑定事件
+this.$bus.$on('hello',(data)=>{
+	//...
+})
+```
+
+
+
+## 调用事件
+
+```
+//在需要触发事件的组件上调用
+this.$bus.$emit('hello',data)
+```
+
+
+
+# 消息订阅
+
+
+
+## 安装
+
+> npm i pubsub-js
+
+
+
+## 发布消息
+
+```
+pubsub.publish('hello',数据)
+```
+
+
+
+## 订阅消息
+
+```
+import pubsub from 'pubsub-js'
+	this.pubId = pubsub.subscribe('hello', (msgName, data)=>{
+	//函数体写箭头函数或者用this.methods方法，否则this指向pubsub本身
+})
+```
+
+
+
+### 取消订阅
+
+```
+pubsub.unsubscribe(this.pubId)
+```
+
+
+
+# 发送请求
+
+
+
+## axios
+
+> 安装 npm i axios
+
+```
+import axios from 'axios'
+axios.get('').then(
+	response => {},
+	error => {}
+)
+```
+
+
+
+## resource
+
+> 安装 npm i vue-resource
+>
+> 不常用
+
+```
+import vueResource from 'vue-resource'
+//注册插件，之后vue多了个$http属性
+Vue.use(vueResource)
+
+//用法跟axios一样
+```
+
+
+
+# 插槽
+
+
+
+### 默认插槽
+
+```
+<Student>
+	<Hobit>
+</Student>
+//Hobit组件将作为标签体参数传递给Student组件接收参数
+
+//子组件需要挖一个插槽
+//插槽标签<slot>中间是默认值</slot>
+```
+
+
+
+## 具名插槽
+
+> https://www.youtube.com/watch?v=R4L_nEp9hz0&list=PLmOn9nNkQxJEARHuEpVayY6ppiNlkvrnb&index=103
+
+
+
+# 扩展
+
+
+
+## 下一轮执行：$nextTick
+
+```
+this.$nextTick(function(){
+	//再下一次更新dom后再执行
+	//类似于定时器任务做的延迟任务
+})
+```
+
+
+
+## 动画效果
+
+
+
+```
+@keyframes test{
+	from {
+		transform:translateX(-100%);
+	}
+	to {
+		transform:translateX(0px);
+	}
+}
+
+.v-enter-active{
+	animation:test 1s;
+}
+.v-leave-active{
+	animation:test 1s reverse;/*reverse是取反*/
+}
+
+//实现动画
+//通过动态修改div类名切换，实现动画效果
+//也可以通过vue的transition标签实现
+<transition name='name' :appear='true'>//appear为加载时触发动画，name为css类名v的前缀
+	<div v-show='isShow'>hi</div>
+</transition>
+//isShow数据改变时，触发动画
+```
+
+
+
+## 过度效果
+
+```
+.v-enter-active, .v-leave-active{
+	transition:0.5s linear;/*linear是否匀速*/
+}
+
+.v-enter, .v-leave-to{//进入的起点 和离开的重点
+	transform:translateX(-100%)
+}
+.v-enter-to, .v-leave{//进入的终点 和离开的起点
+	transform:translateX(0)
+}
+
+//实现动画
+//通过动态修改div类名切换，实现动画效果
+//也可以通过vue的transition标签实现
+<transition name='name' :appear='true'>//appear为加载时触发动画，name为css类名v的前缀
+	<div v-show='isShow'>hi</div>
+</transition>
+//isShow数据改变时，触发动画
+```
+
+
+
+## 多元素过度
+
+> transition改为transition-group，并且加key值
+
+
+
+## 三方动画
+
+> animate.css
+>
+> 安装npm i animate.css
+>
+> import 'animate.css'
+>
+> 用法看官网
 
 
 
