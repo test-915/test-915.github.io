@@ -1,5 +1,5 @@
 ```
-https://www.youtube.com/watch?v=VXvGk3UJ-Ag&list=PLmOn9nNkQxJEARHuEpVayY6ppiNlkvrnb&index=133
+https://www.youtube.com/watch?v=mxVSbG8YOTU&list=PLmOn9nNkQxJEARHuEpVayY6ppiNlkvrnb&index=135
 
 未完成
 ```
@@ -2261,6 +2261,53 @@ export default {
 
 
 
+## 路由模式
+
+
+
+### history
+
+> 
+
+```
+const router = new VueRouter({
+	mode:'history', //默认为hash
+})
+```
+
+#### 解决history后端404问题
+
+> 安装npm i connect-history-api-fallback
+
+```
+//修改express
+//先use再配置静态资源
+app.use(history())
+app.use(express.static(__dirname+'/static'))
+```
+
+
+
+
+
+### hash
+
+```
+const router = new VueRouter({
+	mode:'hash', //默认为hash
+})
+```
+
+
+
+# UI组件库
+
+> 移动端：Vant、Cube UI、mint UI
+>
+> PC端：Element UI、IView UI
+>
+> 安装npm i element-ui
+
 # 扩展
 
 
@@ -2348,6 +2395,37 @@ this.$nextTick(function(){
 > import 'animate.css'
 >
 > 用法看官网
+
+
+
+# Express
+
+
+
+## 安装
+
+> npm i express
+
+
+
+## server
+
+```
+//创建server.js
+
+const express = require('express')
+
+const app =express()
+//指定静态资源
+app.use(express.static(__dirname+'/static'))
+//配置路由
+app.use('person',(req,res)=>{
+	res.send({name:'tom'})
+})
+app.listen(5005,(err)=>{
+	if(!err) console.log('开启')
+})
+```
 
 
 
