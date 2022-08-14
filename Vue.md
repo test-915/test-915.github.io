@@ -1,5 +1,5 @@
 ```
-https://www.youtube.com/watch?v=R4L_nEp9hz0&list=PLmOn9nNkQxJEARHuEpVayY6ppiNlkvrnb&index=103
+https://www.youtube.com/watch?v=VXvGk3UJ-Ag&list=PLmOn9nNkQxJEARHuEpVayY6ppiNlkvrnb&index=133
 
 未完成
 ```
@@ -10,7 +10,7 @@ https://www.youtube.com/watch?v=R4L_nEp9hz0&list=PLmOn9nNkQxJEARHuEpVayY6ppiNlkv
 
 
 
-## 配置生产提示
+## .配置生产提示
 
 ```js
 //阻止vue的环境提示
@@ -19,7 +19,7 @@ Vue.config.productionTip = false
 
 
 
-## 定制键盘别名
+## .定制键盘别名
 
 ```js
 Vue.config.keyCodes.huiche = 13
@@ -33,7 +33,7 @@ Vue.config.keyCodes.huiche = 13
 
 
 
-## 通过对象绑定
+## .通过对象绑定
 
 ```js
 new Vue({
@@ -45,7 +45,7 @@ new Vue({
 
 
 
-## 通过实例绑定
+## .通过实例绑定
 
 ```js
 coust v = new Vue({})
@@ -58,7 +58,7 @@ v.$mount('#root')
 
 
 
-## 对象式数据
+## .对象式数据
 
 ```js
 //可能会报错
@@ -72,7 +72,7 @@ new Vue({
 
 
 
-## 函数式数据
+## .函数式数据
 
 ```js
 new Vue({
@@ -96,7 +96,7 @@ new Vue({
 
 
 
-## 属性插值实现
+## .属性插值实现
 
 ```js
 new Vue({
@@ -108,7 +108,7 @@ new Vue({
 
 
 
-## methods实现
+## .methods实现
 
 > 没有缓存，调用几次就计算几次
 
@@ -124,7 +124,7 @@ new Vue({
 
 
 
-## 计算属性实现
+## .计算属性实现
 
 > 有缓存，每次改变依赖数据时，只会调用一次，然后用缓存复用
 
@@ -149,7 +149,7 @@ new Vue({
 
 
 
-## 通过对象监视
+## .通过对象监视
 
 ```js
 const vm = new Vue({
@@ -177,7 +177,7 @@ const vm = new Vue({
 
 
 
-## 通过实例监视
+## .通过实例监视
 
 ```js
 coust vm = new Vue({})
@@ -194,7 +194,7 @@ vm.$watch('isHot',function(newValue, oldValue){
 
 
 
-## 深度监视
+## .深度监视
 
 ```js
 const vm = new Vue({
@@ -1528,7 +1528,7 @@ Vue.use(vueResource)
 
 
 
-### 默认插槽
+## 默认插槽
 
 ```
 <Student>
@@ -1544,7 +1544,720 @@ Vue.use(vueResource)
 
 ## 具名插槽
 
-> https://www.youtube.com/watch?v=R4L_nEp9hz0&list=PLmOn9nNkQxJEARHuEpVayY6ppiNlkvrnb&index=103
+> 多标签插槽
+
+```html
+//父组件
+<Student>
+	//写法1
+	<div slot='ho1'></div>
+	<div slot='ho2'></div>
+	//写法2
+	<template v-slot:ho3></template>
+</Student>
+
+//子组件
+<div>
+	<slot name='ho1'></slot>
+	<slot name='ho2'></slot>
+	<slot name='ho3'></slot>
+</div>
+```
+
+
+
+## 作用域插槽
+
+```
+//父组件
+<Student>
+	<template scope="datax">//scope的值作为接收数据的变量，支持解构赋值
+		<ul>
+			<li v-for"(d,index) in datax" :key="index">{{d}}</li>
+		</ul>
+	</template>
+</Student>
+
+//子组件定义数据，但不使用数据，而是传给插槽的使用者父组件
+<div>
+	<slot :datax='datax'></slot>
+</div>
+exprot default {
+	data(){
+		return {
+			datax:[]
+		}
+	}
+}
+```
+
+
+
+# Vuex
+
+
+
+## 安装
+
+```
+npm i vuex
+```
+
+
+
+## 创建Store
+
+```
+/*创建一个store文件*/
+
+import Vue from 'vue'
+Vue.use(Vuex)
+
+import Vuex from 'vuex'
+const actions = {}
+const mutations = {}
+const state = {}
+const getters = {}
+export default new Vuex.Store({
+	actions,
+	state,
+	mutations,
+	getters
+})
+```
+
+
+
+## 引入
+
+```
+import store from './store'
+new Vue({
+	store //Vm和vc会带有$store属性
+})
+```
+
+
+
+## dispath更新数据
+
+> dispath与mapActions都是调用action对象的方法
+>
+> 中间没有逻辑可以忽略dispath，直接commit
+
+
+
+### dispath：调用一个action
+
+```
+//调用action对象，在对象内进行判断逻辑
+.dispath('action_name',value) 
+```
+
+
+
+### mapActions：映射一组dispath
+
+```
+//映射方法mapActions
+methods:{
+	...mapActions({
+		methods_name:'action_name',
+		methods_name2:'action_name2',
+	}),
+	//简写
+	...mapActions(['action_name','action_name2']),
+}
+//通过mapActions生成的映射函数，需要用methods_name('value参数')，而不是用methods_name调用。
+```
+
+
+
+## commit更新数据
+
+> commit和mapMutations都是更新数据对象Mutations的方法
+
+
+
+### commit：调用一个Mutations
+
+```
+//更新数据，aciton对象要大写
+.commit('ACTION_NAME',value) 
+```
+
+
+
+### mapMutations：映射一组commit
+
+```
+methods:{
+    ...mapMutations({
+    	//这种方式调用commit会将参数传递给value，而methods默认参数是event，
+    	//需要在调用的时候指定value才能避免参数传错。
+        methods_name:'ACTION_NAME',
+        methods_name2:'ACTION_NAME2'
+    })
+    //简写
+    ...mapMutations([
+    	'ACTION_NAME','ACTION_NAME2'
+    ])
+}
+
+//通过mapMutations生成的映射函数，需要用methods_name('value参数')，而不是用methods_name调用。
+//例如
+<button @click="methods_name(n)">点击</button>
+```
+
+
+
+## 操作数据的方法
+
+
+
+### state
+
+```
+//存储数据，同data属性
+const state = {
+	sum:0
+}
+```
+
+
+
+### action
+
+```
+const action = {
+	jia(context, value){ //context是上下文对象，其中包含了用于更新数据的commit的API
+		//这里放业务逻辑，通常做一些异步任务，异步请求
+		context.commit('JIA',value)
+	}
+}
+```
+
+
+
+### mutations
+
+```
+const mutations = {
+	JIA(state, value){ //state跟data是一个样
+		//根据value计算出新的state，state类似于data，作用于数据的使用者
+		state.sum += value
+	}
+}
+```
+
+
+
+
+
+### getters
+
+```
+const getters = {
+	bigSum(state){
+		return state.sum*10
+	}
+}
+```
+
+
+
+
+
+
+
+## 读取数据
+
+
+
+### 直接读取
+
+```
+//模板中使用
+{{$store.state.sum}}
+{{$store.getters.bigSum}}
+```
+
+
+
+### mapState映射状态
+
+```
+import {mapState} from 'vuex'
+export default {
+	computed(){
+		//mapState返回一个封装各类state属性和方法的对象，通过...可以展开合并到computed
+		...mapState({
+			he:'sum',//key写绑定给什么属性，val写数据来自$store.state的哪个属性
+		})
+		//简写
+		...mapState(['sum','......'])
+	}
+}
+```
+
+
+
+
+
+### mapGetters映射加工状态
+
+```
+import {mapGetters} from 'vuex'
+export default {
+	computed(){
+		...mapGetters({
+			he:'sum',
+		})
+		//简写
+		...mapGetters(['sum','......'])
+	}
+}
+```
+
+
+
+## 模块化
+
+
+
+### 配置
+
+```
+const countOptions = {
+	namespace:true
+	state:{},
+    getters:{},
+    action:{},
+    mutations:{},
+}
+//...各种vue的options
+export default new Vuex.Store({
+	modules:{
+		countAbout:countOptions
+	}
+})
+
+//读取和操作vuex数据时，通过属性名，也就是coutOptions.data去操作
+```
+
+
+
+### 读取
+
+```
+//直接读取state
+this.$store.state.countAbout.data
+//直接读取getters
+this.$store.getters['countAbout/data']
+
+//读取和操作vuex数据时，通过属性名，countAbout.data去操作
+...mapState(['countAbout','...其他数据模块']) //coutOptions.data调用数据
+
+//通过命名空间调用数据
+//这种方法namespace为true
+...mapState('countAbout',['data','data2','data3']) //data调用数据
+...mapState('countAbout',{data_name:data,data2_name:data2}) 
+```
+
+
+
+### action更新
+
+
+
+#### 映射更新数据
+
+> 方法跟commit的命名空间映射方法一样，具体看
+
+
+
+#### 单独更新数据
+
+```
+this.$store.dispath('countAbout/data',data)
+```
+
+
+
+### commit更新
+
+
+
+#### 映射更新数据
+
+```
+...mapMutations(['countAbout','...其他数据模块']) 
+
+
+...mapMutations('countAbout',['data','data2','data3']) 
+...mapMutations('countAbout',{data_name:data,data2_name:data2})
+```
+
+
+
+#### 单独更新数据
+
+```
+this.$store.commit('countAbout/data',data)
+//模块化vuex，需要使用命名空间方法，在数据名前加命名空间，然后用/分割
+```
+
+
+
+# 路由
+
+
+
+## 安装
+
+> npm i vue-router
+
+
+
+## 配置
+
+```
+//创建文件router/index.js
+import VueRouter from ‘vue-router’
+export default new VueRouter({
+	routes:[
+	{
+		path:'/about',
+		component:About //组件
+	},
+		path:'/about',
+		component:About //组件
+		children:[ //嵌套路由
+			{
+				path:'news',
+				component:News
+			}
+		]
+	},
+	]
+})
+
+//引入路由器
+import router from '.router'
+import VueRouter from 'vue-router'
+Vue.use(VueRouter)
+export default new Vue({
+	router:router
+})
+```
+
+
+
+## 链接
+
+```
+<router-link to="/about" active-class='class_name'></router-link>
+```
+
+
+
+## 视图
+
+```
+<router-view></router-view>
+```
+
+
+
+## 命名
+
+```
+export default new VueRouter({
+	routes:[
+	{
+		name:'about',//命名
+		path:'/about',
+		component:About
+	},
+	{
+		name:'qarams',//给路由声明qarams参数
+		path:'/qarams/:value', //value将接收qarams参数
+		component:qarams
+	},
+		path:'/about',
+		component:About 
+		children:[
+			{
+				path:'news',
+				component:News,
+				props:true//为真则将，params将以props的形式传参
+			}
+		]
+	},
+	]
+})
+
+//使用命名路由
+<router-link :to="{
+	name:'name'
+}">查看</router-link>
+```
+
+
+
+## query传参
+
+
+
+```
+//接收数据：
+$route.query.key
+
+
+//传递数据：
+//to的常量字符串写法
+<router-link to="/?key=value">查看</router-link>
+
+//to的变量字符串写法
+<router-link :to="`/?key=${value}`">查看</router-link>
+
+//to的对象写法
+<router-link :to="{
+	path:'/',
+	query:{
+		key:value
+	}
+}">查看</router-link>
+```
+
+
+
+## params传参
+
+```
+//接收数据：
+$route.params.value
+
+//路由声明接收：
+path:'/qarams/:value' //value将接收qarams参数
+
+//传递数据：
+<router-link to="/value/">查看</router-link>
+//对象传参
+<router-link :to="{
+	name:'params', //params传参不允许使用path，必须使用name匹配路由
+	params:{
+		value:'abc'
+	}
+}">查看</router-link>
+```
+
+
+
+## prop传参
+
+```
+//布尔值写法：
+//路由传递的所有params参数都会通过props床给组件
+props:true
+
+//对象写法：
+//对象里的key和val会以props的形式传给组件
+props:{a:1,b:'hello'}
+
+//函数写法：
+//props($route){
+	return {id:$route.query.id}
+}
+
+//在组件中声明接收
+props:['id']
+```
+
+
+
+## 编程式路由导航
+
+
+
+### replace
+
+```
+//基本作用
+//替换掉路由中的历史记录
+<router-link replace to='/abc'></router-link>
+
+//触发replace
+this.$router.replace({
+	name:'name',//配置路由器动作，相当于点击了下链接
+	query:{
+		id:'id'
+	}
+})
+```
+
+
+
+### push
+
+```
+//触发push
+this.$router.push({
+	name:'name',//配置路由器动作，相当于点击了下链接
+	query:{
+		id:'id'
+	}
+})
+```
+
+
+
+### 前进后退
+
+```
+//后退
+this.$router.back()
+
+//前进
+this.$router.forward()
+
+//前进后退多步
+this.$router.go(3)前进3步，负数为后退
+```
+
+
+
+## 缓存路由
+
+```
+<keep-alive>//包裹住路由的组件
+	<router-view></router-view>//这个区域的路由导航不会销毁组件，而是进行缓存
+</keep-alive>
+
+//筛选缓存组件
+<keep-alive include='News'>
+	<router-view></router-view>//这个区域的路由导航不会销毁组件，而是进行缓存
+</keep-alive>
+
+//筛选缓存多个组件
+<keep-alive :include='['News1','News2']'>
+	<router-view></router-view>//这个区域的路由导航不会销毁组件，而是进行缓存
+</keep-alive>
+```
+
+
+
+## 路由生命周期
+
+```
+//激活路由时执行
+activated(){
+
+}
+
+//失活路由时执行
+deactivated(){
+
+}
+```
+
+
+
+## 路由守卫：权限校验
+
+
+
+### 全局前置守卫
+
+> 初始化和切换前调用
+
+```
+const router = new VueRouter({
+	{
+		name:'home',
+		path:'/home',
+		meta:{
+			needSuper:true
+		}
+	}
+})
+
+//全局前置路由守卫
+router.beforeEach((to, from, next)=>{
+	//判断路由
+	if(to.meta.needSuper){
+        //去localStorage查权限
+        if(localStorage.getItem('is_super') === 1){
+        	next()//放行
+        }else{
+        	alert('权限不足')
+        }
+	}else{
+		next()//放行
+	}
+})
+```
+
+
+
+### 全局后置守卫
+
+> 初始化和切换后调用
+
+```
+const router = new VueRouter({
+	{
+		name:'home',
+		path:'/home',
+		meta:{
+			needSuper:true
+		}
+	}
+})
+
+//全局后置路由守卫
+router.afterEach((to, from)=>{
+	//处理一些切换路由后的事情
+})
+```
+
+
+
+### 独享路由守卫
+
+```
+const router = new VueRouter({
+	{
+		name:'home',
+		path:'/home',
+		beforeEnter:(to, from, next)=>{
+			if(localStorage.getItem('is_super') === 1){
+                next()//放行
+            }else{
+                alert('权限不足')
+            }
+		}
+	}
+})
+```
+
+
+
+### 组件内路由守卫
+
+```
+export default {
+	name:'components',
+	//通过路由规则，进入组件时
+	beforeRouteEnter(to,from, next){
+		//判断进入组件的权限判断
+	},
+	//通过路由规则，离开组件时
+	beforeRouteLeave(to,from, next){
+		//判断离开组件的权限判断
+	}
+}
+```
 
 
 
@@ -1552,7 +2265,7 @@ Vue.use(vueResource)
 
 
 
-## 下一轮执行：$nextTick
+## 特殊生命周期钩子：下一轮执行$nextTick
 
 ```
 this.$nextTick(function(){
