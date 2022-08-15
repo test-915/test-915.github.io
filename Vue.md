@@ -1,5 +1,5 @@
 ```
-https://www.youtube.com/watch?v=mxVSbG8YOTU&list=PLmOn9nNkQxJEARHuEpVayY6ppiNlkvrnb&index=135
+https://www.youtube.com/watch?v=VN7G5be9t4U&list=PLmOn9nNkQxJEARHuEpVayY6ppiNlkvrnb&index=154
 
 未完成
 ```
@@ -739,6 +739,7 @@ if和else 不能打断，要紧挨着
 //实例追加
 Vue.set(vm.student,'sex','男') //再student属性中添加sex为男的属性
 vm.$set(vm.student,'sex','男') //同理
+vm.$delete(vm.student) //删除一个属性
 
 
 //对象内部
@@ -2308,6 +2309,261 @@ const router = new VueRouter({
 >
 > 安装npm i element-ui
 
+
+
+## 全部引入
+
+```
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+Vue.use(ElementUI)
+```
+
+
+
+## 按需引入
+
+> 安装包npm install babel-plugin-component -D
+>
+> -D为开发依赖
+
+```
+//修改babel.config.js
+module.exports = {
+	presets:[
+		...,
+		['@babel/preset-env',{"modules":false}],
+	],
+	plugins:[
+		"component",
+		{
+			"libraryName":'element-ui',
+			'styleLibraryName':theme-chalk
+		}
+	]
+}
+
+//修改main.js
+//注册组件就行了，不用再引入样式了
+import {Button, Row} from 'element-ui'
+Vue.component(Button.name,Button)
+```
+
+
+
+# Vite
+
+
+
+> npm init vite-app projectName
+>
+> 进入文件夹
+>
+> cd ..
+>
+> 安装
+>
+> npm i
+>
+> 启动
+>
+> npm dev
+
+
+
+# Vue3
+
+
+
+## 引入vue
+
+```
+import {createApp} from 'vue'
+createApp(App).mount(#app)
+```
+
+
+
+## setup
+
+```js
+//App.vue
+
+export default {
+	name:'App',
+	setup(){
+		//数据
+		let name = '张三'
+        
+        //方法
+        function sayHello(){
+            alert(`我是${name}`)
+        }
+        
+        //返回一个对象
+        return {
+            name,
+            sayHello
+        }
+        
+        //返回一个函数
+        //需要引入h，import {h} from 'vue'
+        return()=> h('h1','abc')
+	}
+}
+```
+
+
+
+## setup参数
+
+```js
+//App.vue
+
+export default {
+	name:'App',
+    props:['p1']
+	emits:['hello'] //声明接收自定义事件
+	setup(props, context){ //context对象包含emits自定义事件
+		context.attrs
+		context.slots
+		context.emit
+        return {}
+	}
+}
+```
+
+
+
+## 计算属性
+
+```js
+import {computed} from 'vue'
+export default {
+	setup(){
+		let person = reactive({
+			firstName:'a',
+			lastName:'b'
+		})
+		//简写，无法修改
+		person.fullName = compute(()=>{
+			return person.firstName + '-' + person.lastName
+		})
+        //完整写法
+		person.fullName = compute(()=>{
+            get(){
+				return person.firstName + '-' + person.lastName
+            },
+            set(value){
+                ...//更新逻辑
+            }
+		})
+	}
+}
+```
+
+
+
+## 监视属性
+
+```js
+import {ref,watch} from 'vue'
+export default {
+	setup(){
+		let sum = ref(0)
+		let abc = ref('a')
+		//监视一个数据
+		watch(sum, (newValue, OldValue)=>{
+		}, {immediate:true,deep:true})
+        //监视多个
+		watch([sum, abc], (newValue, OldValue)=>{
+		})
+		//如果监视器监视的是reactive定义的数据，将无法得到oldValue
+	}
+}
+```
+
+
+
+## watchEffect监视
+
+```
+import {watchEffect} from 'vue'
+watchEffect(()=>{
+	const x1 = sum.value //监视sum.value
+})
+```
+
+
+
+## ref：处理响应式基本数据、对象、数组
+
+```
+//App.vue
+import {ref} import 'vue'
+
+export default {
+	name:'App',
+	setup(){
+		//数据
+		let name = ref('张三')
+		let job = ref({
+			type:'前端',
+			salary:'30k'
+		})
+        
+        //方法
+        function sayHello(){
+        	name.value = '李四'
+        	job.value.type = '后端'
+            alert(`我是${name}`)
+        }
+        
+        //返回一个对象
+        return {
+            name,
+            sayHello
+        }
+	}
+}
+```
+
+
+
+## reactive：处理响应式数据对象、数组
+
+```
+//App.vue
+import {ref,reactive} import 'vue'
+
+export default {
+	name:'App',
+	setup(){
+		//数据
+		let name = ref('张三')
+		let job = reactive({
+			type:'前端',
+			salary:'30k'
+		})
+        
+        //方法
+        function sayHello(){
+        	name.value = '李四'
+        	job.type = '后端'
+            alert(`我是${name}`)
+        }
+        
+        //返回一个对象
+        return {
+            name,
+            sayHello
+        }
+	}
+}
+```
+
+
+
 # 扩展
 
 
@@ -2426,6 +2682,14 @@ app.listen(5005,(err)=>{
 	if(!err) console.log('开启')
 })
 ```
+
+
+
+# 开发者工具
+
+> Vue.js devtools bets
+>
+> Vue.js devtools
 
 
 
