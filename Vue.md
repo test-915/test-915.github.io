@@ -1,7 +1,7 @@
 ```
-https://www.youtube.com/watch?v=VN7G5be9t4U&list=PLmOn9nNkQxJEARHuEpVayY6ppiNlkvrnb&index=154
+https://www.youtube.com/watch?v=NMzmtEgSrbQ&list=PLmOn9nNkQxJEARHuEpVayY6ppiNlkvrnb&index=168
 
-未完成
+已完成
 ```
 
 
@@ -2530,6 +2530,42 @@ export default {
 
 
 
+## 自定义ref
+
+```js
+//实现防抖功能，延迟更新页面
+import {customRef} from 'vue'
+export default {
+	setup(){
+		function myRef(value,delay){
+            return customRef((track,trigger)=>{
+                //track为追踪
+                //trigger为触发器，通知vue更新页面
+                //定义一个定时器
+                let timer
+                return {
+                    get(){//初始化展示数据的返回值
+                        track()//追踪数据的变化，
+                        return value
+                    },
+                    set(newValue){//修改数据
+                        //异步任务
+                        clearTimeout(timer)
+                        timer = setTimeout(()=>{
+                            value = newValue
+                            trigger()//重新解析
+                        },delay)
+                    },
+                }
+            })
+        }
+		let keyWord = myRef('hello',delay)
+	}
+}
+```
+
+
+
 ## reactive：处理响应式数据对象、数组
 
 ```
@@ -2560,6 +2596,235 @@ export default {
         }
 	}
 }
+```
+
+
+
+
+
+## shallowReactive和shallowRef
+
+> 功能类似于reacttive和ref，但是它是浅层次的响应式数据，
+>
+> shallowReactive只考虑第一层的响应式
+
+
+
+## 只读
+
+> 深层只读readonly和浅层只读shallowReadonly
+
+```js
+import {readonly,reactive} from 'vue'
+let job = reactive({
+    type:'前端',
+    salary:'30k',
+    detail:{
+        a:1
+    }
+})
+job = readonly(job) //不能修改的job
+job = shallowReadonly(job) //不能修改的job的第一层数据
+
+```
+
+
+
+## 转原始数据
+
+
+
+### toRaw
+
+> 将reactive对象转为普通对象
+
+```js
+import {toRaw, markRaw} from 'vue'
+let job = reactive({
+    type:'前端',
+    salary:'30k',
+    detail:{
+        a:1
+    }
+})
+job = toRaw(job) //reactive响应式对象转原始对象
+//还原成原始数据，如对象、数组、数字、字符串
+//转换后数据将不再具有响应功能
+```
+
+
+
+### markRaw
+
+> 标记一个对象，让它无法成为响应式对象
+>
+> 常用于标记复杂的第三方类库
+>
+> 常用在标记不可变数据源的大列表，跳过响应式转化来提高性能
+
+```js
+import {toRaw, markRaw} from 'vue'
+let job = reactive({
+    type:'前端',
+    salary:'30k',
+    detail:{
+        a:1
+    }
+})
+let abc = {a:1}
+job.abc = markRaw(abc) //job.abc被标记为非响应式数据，数据被修改时不会发生响应
+```
+
+
+
+
+
+## 生命周期
+
+```js
+import {
+    ref, 
+    onBeforeMount,
+    onMounted,
+    onBeforeUpdate, 
+    onUpdated,
+    onBeforeUnmount,
+    onUnmounted
+} from 'vue'
+
+export default {
+	setup(){ //setup相当于就是beforeCreate和created
+        onBeforeMount(()=>{})
+        onMounted(()=>{})
+        onBeforeUpdate(()=>{})
+        onUpdated(()=>{})
+        onBeforeUnmount(()=>{})
+        onUnmounted(()=>{})
+    }
+}
+```
+
+
+
+## hook
+
+```
+//创建文件 hooks/usePoint.js
+import {reactive, onMounted, onBeforeUnmount} from 'vue'
+export default function(){
+	let point = reactive({
+		x:0,
+		y:0
+	})
+	
+	function savePoint(event){
+		point.x = event.pageX
+		point.y = event.pageY
+	}
+	
+	onMounted(()=>{
+		window.addEventListenter('click',savePoint)
+	})
+	
+	onBeforeUnmount(()=>{
+		window.removeEventListenter('click',savePoint)
+	})
+	return point
+}
+
+//在组件引入hook
+import usePoint from '../hooks/usePoint'
+export default {
+	name:'Test',
+	setup(){
+		const point = usePoint()
+		return {point}
+	}
+}
+```
+
+
+
+## toRef和toRefs
+
+> 引用源数据
+
+```
+import {toRef, toRefs} from 'vue'
+export default {
+	setup(){
+		...
+		return {
+			name:toRef(person.name)
+			..toRefs(person) //将对象中的数据展开引用源数据
+		}
+	}
+}
+```
+
+
+
+## 祖孙通信
+
+```js
+import {provide} from 'vue'
+export default {
+    setup(){
+        let car = reactive({name:'ben',price:'40w'})
+        provide('car',car)//传入数据car,给后代组件使用
+        return {...toRefs(car)}
+    }
+}
+
+//后代读取数据
+import {inject} from 'vue'
+let car = inject('car')
+```
+
+
+
+## 响应式判断
+
+```
+isRef
+isReactive
+isReadonly
+isProxy
+```
+
+
+
+## teleport
+
+> 传送
+
+```html
+<template>
+    <teleport to="body">
+        传动的内容，会传送到body标签
+    </teleport>
+</template>
+```
+
+
+
+## 异步引入和加载提示
+
+```
+//异步引入
+import {defineAsyncComponent} from 'vue'
+const Child = defineAsyncComponent(()=>import('./components/Child'))
+
+<template>
+	<Suspense>
+		<template v-slot:default>加载后
+			<Child/>
+		</template>
+		<template v-slot:fallback>加载时展示
+			加载中
+		</template>
+	</Suspense>
+</template>
 ```
 
 
